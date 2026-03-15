@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtAsset — Execution Challenges</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+<body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  :root {
+    --gold: #C9A84C;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --surface: #f9fafb;
+    --card: #ffffff;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: #fff; padding: 20px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); color: var(--ink); }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 0 60px; }
+
+  .cover { padding: 40px 0 28px; border-bottom: 0.5px solid var(--border); margin-bottom: 32px; }
+  .cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 10px; }
+  .cover-title { font-family: var(--serif); font-size: 40px; font-weight: 600; line-height: 1.1; margin-bottom: 8px; }
+  .cover-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+
+  .nav-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); margin-bottom: 28px; overflow-x: auto; }
+  .nav-tab { font-size: 13px; font-weight: 400; color: var(--muted); padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color .15s; }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 500; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .section-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 8px; }
+  .section-title { font-family: var(--serif); font-size: 26px; font-weight: 600; margin-bottom: 6px; line-height: 1.2; }
+  .section-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+  .divider { height: 0.5px; background: var(--border); margin: 28px 0; }
+
+  /* Challenge cards */
+  .challenge-block { margin-bottom: 20px; }
+  .challenge { border: 0.5px solid var(--border); border-radius: 10px; background: var(--card); overflow: hidden; margin-bottom: 12px; }
+  .challenge-header { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; user-select: none; }
+  .ch-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+  .ch-title-wrap { flex: 1; }
+  .ch-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .ch-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .ch-severity { font-size: 10px; font-weight: 500; border-radius: 4px; padding: 3px 8px; letter-spacing: 0.04em; flex-shrink: 0; }
+  .sev-critical { background: #fde8e8; color: #b03030; }
+  .sev-high { background: #fff3e0; color: #955800; }
+  .sev-medium { background: #e8f0fe; color: #2a5cb3; }
+  .sev-low { background: #f0fde8; color: #2e8030; }
+  .challenge-body { padding: 0 18px 18px; border-top: 0.5px solid var(--border); display: none; }
+  .challenge.open .challenge-body { display: block; }
+
+  .ch-section { margin-top: 16px; }
+  .ch-section-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .prob-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .prob-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 6px; }
+  .prob-text { font-size: 13px; color: var(--ink); line-height: 1.5; }
+  .mit-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .mit-dot { width: 6px; height: 6px; border-radius: 50%; background: #27ae60; flex-shrink: 0; margin-top: 6px; }
+  .mit-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .example-box { background: var(--surface); border-radius: 8px; padding: 12px 14px; margin-top: 10px; font-size: 12px; color: var(--muted); line-height: 1.5; border-left: 2px solid var(--border); }
+  .example-box strong { color: var(--ink); font-weight: 500; }
+
+  .ch-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* Priority matrix */
+  .matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .matrix-cell { border: 0.5px solid var(--border); border-radius: 8px; padding: 14px; background: var(--card); }
+  .matrix-cell.hot { border-color: #d9534f; }
+  .matrix-cell.warm { border-color: #f0a500; }
+  .matrix-cell.cool { border-color: #2a5cb3; }
+  .matrix-cell.cold { border-color: var(--border); }
+  .matrix-quad { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .matrix-quad.hot { color: #b03030; }
+  .matrix-quad.warm { color: #955800; }
+  .matrix-quad.cool { color: #2a5cb3; }
+  .matrix-quad.cold { color: var(--muted); }
+  .matrix-item { font-size: 12px; color: var(--muted); padding: 3px 0; border-bottom: 0.5px solid var(--border); }
+  .matrix-item:last-child { border-bottom: none; }
+
+  /* Timeline */
+  .timeline { position: relative; margin-top: 8px; }
+  .tl-row { display: flex; gap: 0; margin-bottom: 10px; align-items: flex-start; }
+  .tl-left { width: 80px; flex-shrink: 0; font-size: 11px; color: var(--gold); font-weight: 500; padding-top: 3px; text-align: right; padding-right: 16px; }
+  .tl-line { width: 1px; background: var(--border); margin-top: 6px; flex-shrink: 0; align-self: stretch; position: relative; }
+  .tl-dot { position: absolute; top: 0; left: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+  .tl-right { flex: 1; padding-left: 16px; }
+  .tl-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tl-items { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* Stakeholder map */
+  .stake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stake-card { border: 0.5px solid var(--border); border-radius: 8px; padding: 14px; background: var(--card); }
+  .stake-role { font-size: 12px; font-weight: 500; margin-bottom: 6px; color: var(--gold); }
+  .stake-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .stake-item { font-size: 12px; color: var(--muted); padding: 3px 0; border-bottom: 0.5px solid var(--border); }
+  .stake-item:last-child { border-bottom: none; }
+
+  .footnote { font-size: 11px; color: var(--muted); line-height: 1.5; padding-top: 16px; border-top: 0.5px solid var(--border); margin-top: 28px; }
+</style>
+
+<div class="wrap">
+  <div class="cover">
+    <div class="cover-tag">PRD Supplement — Execution Risks</div>
+    <div class="cover-title">The Hard Problems</div>
+    <div class="cover-sub">Building an art investment platform is not primarily a technology problem. It is a trust, logistics, legal, and cold-start problem. This document maps every major execution challenge, rates its severity, and defines the path through it.</div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchTab('overview')">Priority Map</div>
+    <div class="nav-tab" onclick="switchTab('legal')">Legal & Compliance</div>
+    <div class="nav-tab" onclick="switchTab('logistics')">Logistics</div>
+    <div class="nav-tab" onclick="switchTab('trust')">Trust & Authentication</div>
+    <div class="nav-tab" onclick="switchTab('copyright')">Copyright & IP</div>
+    <div class="nav-tab" onclick="switchTab('ops')">Business Operations</div>
+    <div class="nav-tab" onclick="switchTab('coldstart')">Cold Start</div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="section-label">Risk Priority Matrix</div>
+    <div class="section-title">Solve these in this order</div>
+    <div class="section-desc">Challenges ranked by two axes: how badly it blocks the business if unsolved, and how hard it is to fix. The top-left quadrant must be resolved before launch. Others can be managed progressively.</div>
+
+    <div class="matrix">
+      <div class="matrix-cell hot">
+        <div class="matrix-quad hot">Critical — Solve Before Launch</div>
+        <div class="matrix-item">Authentication: who verifies the art is real?</div>
+        <div class="matrix-item">Legal entity & escrow for transactions</div>
+        <div class="matrix-item">Artist copyright licensing for display</div>
+        <div class="matrix-item">Shipping insurance & damage liability</div>
+        <div class="matrix-item">Cold start: first 20 artists & 20 collectors</div>
+      </div>
+      <div class="matrix-cell warm">
+        <div class="matrix-quad warm">High — Solve in First 6 Months</div>
+        <div class="matrix-item">AML / KYC for high-value transactions</div>
+        <div class="matrix-item">Cross-border customs & import duties</div>
+        <div class="matrix-item">Dispute resolution process</div>
+        <div class="matrix-item">Curator hiring & standards</div>
+        <div class="matrix-item">Payment gateway in Vietnam & SEA</div>
+      </div>
+      <div class="matrix-cell cool">
+        <div class="matrix-quad cool">Medium — Manage Progressively</div>
+        <div class="matrix-item">Capital gains tax guidance for collectors</div>
+        <div class="matrix-item">Fractional ownership regulatory path</div>
+        <div class="matrix-item">DMCA / takedown process for IP abuse</div>
+        <div class="matrix-item">Multi-currency pricing & FX exposure</div>
+        <div class="matrix-item">Warehouse / consignment storage</div>
+      </div>
+      <div class="matrix-cell cold">
+        <div class="matrix-quad cold">Low — Plan for Scale</div>
+        <div class="matrix-item">Securities licensing (if fractional)</div>
+        <div class="matrix-item">Museum & institution partnerships</div>
+        <div class="matrix-item">AI art policy and filtering</div>
+        <div class="matrix-item">Third-party appraiser network</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Solve-in-Sequence Timeline</div>
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="tl-left">Pre-launch</div>
+        <div style="position:relative;margin-top:6px;"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-title">Foundation layer</div>
+          <div class="tl-items">Register legal entity in Vietnam (and Singapore for SEA reach) · Sign 1 art authentication partner · Draft artist IP licensing agreement · Set up escrow with a licensed payment partner · Recruit 2–3 founding curators</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">Month 0–3</div>
+        <div style="position:relative;margin-top:6px;"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-title">Soft launch (closed beta)</div>
+          <div class="tl-items">Onboard 20 vetted artists · 50 invited collectors · Test physical shipping pipeline with 5 real transactions · Identify logistics partner for VN → SEA delivery · Establish basic KYC for transactions above $1,000</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">Month 3–9</div>
+        <div style="position:relative;margin-top:6px;"><div class="tl-dot"></div></div>
+        <div class="tl-right">
+          <div class="tl-title">Operational hardening</div>
+          <div class="tl-items">Cross-border shipping protocol finalized · AML policy written and tested · Dispute resolution process documented · Currency handling (VND, USD, SGD) stabilized · First secondary market transactions handled</div>
+        </div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-left">Year 2+</div>
+        <div style="position:relative;margin-top:6px;"><div class="tl-dot" style="background:var(--border);"></div></div>
+        <div class="tl-right">
+          <div class="tl-title">Expansion layer</div>
+          <div class="tl-items">Fractional ownership legal structure (requires securities compliance) · Regional licensing in PH, ID, TH · Partnership with auction houses · Art storage / warehouse facility · Third-party appraiser network</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGAL TAB -->
+  <div class="tab-content" id="tab-legal">
+    <div class="section-label">Legal & Compliance</div>
+    <div class="section-title">The Regulatory Minefield</div>
+    <div class="section-desc">Art transactions sit at the intersection of commercial law, financial regulation, consumer protection, and cultural property law. Each country in SEA has different rules. This is the most underestimated cost of building this platform.</div>
+
+    <div class="challenge open" id="c-entity">
+      <div class="challenge-header" onclick="toggleC('c-entity')">
+        <div class="ch-icon" style="background:#fde8e8;">⚖️</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Legal Entity Structure & Jurisdiction</div>
+          <div class="ch-sub">Where do you incorporate, and what does that mean for transactions?</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">The problems</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Vietnam limits foreign ownership in certain business types. A pure-Vietnamese entity may restrict international investor participation.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Operating in multiple SEA countries without local entities creates tax and liability exposure.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Art sales above a threshold may require licensed dealers or auctioneers depending on country.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">How to navigate it</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Incorporate the holding entity in Singapore (strong IP law, clean regulatory environment, SEA fintech hub). Operate a Vietnam subsidiary for local artist onboarding.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Use a marketplace model (not dealer model) initially — you are a platform connecting parties, not the art dealer, which reduces licensing requirements.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Consult an art law specialist before launch. Estimated cost: $3–8k for initial structuring advice.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-aml">
+      <div class="challenge-header" onclick="toggleC('c-aml')">
+        <div class="ch-icon" style="background:#fff3e0;">🔍</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Anti-Money Laundering (AML) & Know Your Customer (KYC)</div>
+          <div class="ch-sub">The art market is one of the last unregulated channels for financial crime</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">Why this matters more for art than other markets</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">The global art market has historically been a vehicle for money laundering due to anonymity, high values, and minimal regulation. Regulators are actively closing this gap — the EU's 6th AML Directive specifically includes art dealers. SEA will follow.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">A $50,000 painting sale with an anonymous buyer could trigger regulatory scrutiny and expose the platform to fines if no KYC was performed.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">High-net-worth collectors in the region may prefer anonymity — KYC requirements may reduce conversion on the first high-value transaction.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Practical mitigation</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Implement tiered KYC: no verification for browsing/following; passport + address for purchases over $500; enhanced due diligence for transactions over $10,000.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Partner with a KYC-as-a-service provider (Jumio, Onfido, or regional equivalents). Do not build this in-house.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Keep transaction records for 7 years minimum. Appoint a compliance officer as the business scales.</div></div>
+        </div>
+        <div class="example-box"><strong>Real-world precedent:</strong> In 2020, the US Anti-Money Laundering Act brought high-value art dealers under the same rules as banks for the first time. Platforms that had no KYC process scrambled to retrofit it. Building it in from day one is far cheaper.</div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-fractional">
+      <div class="challenge-header" onclick="toggleC('c-fractional')">
+        <div class="ch-icon" style="background:#e8f0fe;">📊</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Fractional Ownership — Securities Law</div>
+          <div class="ch-sub">Selling shares of a painting may legally be selling a security</div>
+        </div>
+        <div class="ch-severity sev-medium">MEDIUM (FUTURE)</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The core problem</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">When you sell fractional shares of a painting with the expectation of profit, this closely resembles an investment contract — which is a security in most jurisdictions. Selling unregistered securities is illegal.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Masterworks solved this by registering each painting as an SEC-qualified offering in the US, which costs $20–50k per artwork. This is not a small-scale solution.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Vietnam and most SEA countries have no equivalent fast-track process for this, making it very difficult to launch there first.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Path forward</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Keep fractional ownership as "coming soon" in the demo and MVP. Do not launch it until legal structure is ready.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Consider a Singapore MAS-regulated structure for the first fractional pilot — Singapore's framework for investment tokens is clearer than Vietnam's.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Alternative model: "Patronage shares" (non-financial, cultural co-ownership) may avoid securities classification while providing a similar product experience.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-tax">
+      <div class="challenge-header" onclick="toggleC('c-tax')">
+        <div class="ch-icon" style="background:#f0fde8;">🧾</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Tax: Capital Gains, VAT, Import Duties</div>
+          <div class="ch-sub">Who owes what, and who is responsible for collecting it?</div>
+        </div>
+        <div class="ch-severity sev-medium">MEDIUM</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">The problems</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Capital gains on art resale are taxable in most countries but collectors may not know this — platform may be held responsible for not informing them.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Vietnam applies 10% VAT on luxury goods, which may apply to high-value art. Rules are ambiguous.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Cross-border shipping of artwork triggers import duties — varies from 0% (under cultural goods exemptions) to 20%+ depending on country and classification.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Mitigation</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Display a clear tax disclaimer at checkout. Do not give tax advice — direct users to a local accountant. This is standard for Artsy, eBay, and other marketplaces.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Partner with a customs broker who specializes in art for cross-border shipments. They manage duty classification and documentation.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">For VAT: consult a Vietnamese tax advisor. Many cultural platforms successfully argue for reduced VAT under cultural promotion provisions.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGISTICS TAB -->
+  <div class="tab-content" id="tab-logistics">
+    <div class="section-label">Logistics</div>
+    <div class="section-title">Moving Physical Art is Not Like Shipping a Package</div>
+    <div class="section-desc">Art is fragile, valuable, irreplaceable, and emotionally charged. A damaged painting doesn't just mean a refund — it means a provenance event, a legal dispute, a reputational hit, and a destroyed trust relationship. Physical logistics is the most operationally complex part of this business.</div>
+
+    <div class="challenge open" id="c-ship">
+      <div class="challenge-header" onclick="toggleC('c-ship')">
+        <div class="ch-icon" style="background:#fde8e8;">📦</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Shipping, Handling & Insurance</div>
+          <div class="ch-sub">The most likely source of customer complaints in Year 1</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">Specific problems</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Standard couriers (DHL, FedEx) will not insure a painting for its full market value. Specialty art transport (fine art crates, climate-controlled, white-glove delivery) costs 3–10× more than regular shipping.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Who bears shipping cost? If the seller pays and the artwork sells for $500, a $200 crated international shipment wipes out margin. If the buyer pays, high shipping cost kills conversion.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Condition at dispatch vs. condition at arrival: without a standardized condition report and photographic evidence at both ends, disputes are unresolvable.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Customs documentation: artworks crossing borders need a commercial invoice, certificate of authenticity, HS code, and sometimes an export permit from the country of origin (Vietnam has cultural heritage export restrictions).</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Operations model</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Domestic first:</strong> Start with Vietnam-only transactions in closed beta. Solve cross-border shipping only when proven on domestic flow.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Partner, don't build:</strong> Contract with an existing fine art logistics provider (e.g. Masterpiece International, Crown Fine Art, or a Southeast Asia-based gallery logistics firm). Do not hire your own delivery staff.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Condition report requirement:</strong> Make a 10-photo condition report (front, back, corners, signature, any damage) mandatory for every listing. Becomes part of the provenance record. Protects both parties.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Art-specific insurance:</strong> Partner with an art insurance provider (AXA Art, Hiscox, or Chubb) to offer transit insurance at checkout. Include a base coverage in the platform fee for works under $5,000.</div></div>
+        </div>
+        <div class="example-box"><strong>Saatchi Art's model:</strong> They outsource all shipping. The artist packages and ships the work using Saatchi's negotiated rates with standard couriers. This works for prints under $1,000. For original works above $5,000, this model breaks down — and that's your target market. You need a higher-touch solution from day one.</div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-storage">
+      <div class="challenge-header" onclick="toggleC('c-storage')">
+        <div class="ch-icon" style="background:#fff3e0;">🏛️</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Consignment, Storage & Platform-Held Art</div>
+          <div class="ch-sub">Does the platform ever hold physical art? This is a major liability question.</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">The decision</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">If art is consigned to you (held at platform-managed storage), you become liable for damage, theft, fire, climate damage. You need a warehouse, insurance, and inventory management.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Masterworks stores art in climate-controlled vaults and charges storage fees. This is a capital-intensive model that only makes sense at scale.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Recommended approach</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Start with an "artist-held" model: art stays with the artist or a trusted gallery partner until sale. Platform never touches the physical work in Year 1.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Introduce optional consignment (platform-managed storage) in Year 2 only if demand validates it, using a partnered art storage facility.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-disputes">
+      <div class="challenge-header" onclick="toggleC('c-disputes')">
+        <div class="ch-icon" style="background:#e8f0fe;">⚡</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Disputes, Returns & Damage Claims</div>
+          <div class="ch-sub">What happens when the buyer says "this is not what was described"?</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">Scenarios you must have a policy for before launch</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Artwork arrives damaged in transit. Insurance covers replacement value but who manages the claim — platform, artist, or buyer?</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Buyer claims the work looks different in person from the photos. This is highly subjective but a real reason for disputes — especially for textured or large works.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Buyer disputes authenticity after purchase. If your curator missed a forgery, the platform's entire trust model is at stake.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Art market convention: most gallery sales are final. Collectors know this. But an online platform draws a broader audience who may expect Amazon-style returns.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Policy framework</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">All sales final — consistent with art market norms. Exceptions: documented damage in transit (insurance claim) or proven authenticity failure (platform liability, full refund).</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Escrow model: funds held for 72 hours after delivery confirmation before releasing to artist. Buyer has a window to flag transit damage.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Dispute resolution: 3-step process — direct negotiation → curator mediation → binding platform decision. Curator mediation is a unique differentiator vs. pure tech platforms.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST & AUTHENTICATION TAB -->
+  <div class="tab-content" id="tab-trust">
+    <div class="section-label">Trust & Authentication</div>
+    <div class="section-title">The Hardest Problem: Verifying Physical Art</div>
+    <div class="section-desc">The entire value proposition of this platform rests on trust. Every certificate, every provenance record, every price history is only as valuable as the system that produced them. This section addresses how you actually build a credible verification operation.</div>
+
+    <div class="challenge open" id="c-auth">
+      <div class="challenge-header" onclick="toggleC('c-auth')">
+        <div class="ch-icon" style="background:#fde8e8;">🔏</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Who Actually Authenticates the Art?</div>
+          <div class="ch-sub">A "Curator" button on a dashboard is not authentication. This is a human problem.</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The problem in detail</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Authenticating physical art requires domain expertise, physical inspection, and sometimes scientific analysis (UV, infrared, X-ray). A photo is not sufficient for high-value works.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Who are your curators? Art school graduates? Established gallery directors? Museum curators moonlighting? Their credibility is the platform's credibility. No one will buy a $10,000 painting based on a certificate signed by "ArtAsset Platform."</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Authentication is expensive to scale. At low volume it's manageable; at 1,000 artworks per month it requires a team of verified experts.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">If you wrongly certify a forgery and a collector loses $50,000, the platform faces a major legal and reputational crisis.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Viable approaches</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Tiered verification model:</strong> Level 1 (artist self-declaration + ID verified) for works under $1,000. Level 2 (curator photo review + artist video walkthrough) for $1,000–$10,000. Level 3 (physical inspection by credentialed appraiser) for works above $10,000.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Partner with a Vietnamese art institution</strong> (e.g. Vietnam Fine Arts Association, a reputable Hanoi or Saigon gallery) to co-sign certificates in Phase 1. Their name on the certificate is the trust signal.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Focus exclusively on living artists at launch.</strong> Authentication is vastly simpler when the artist themselves can verify their own work on video call. Reserve the hard authentication problem for secondary market and historical works.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Art Loss Register API:</strong> Check every submitted work against stolen art databases. Low cost, high trust signal to buyers.</div></div>
+        </div>
+        <div class="example-box"><strong>Smart constraint:</strong> Limit the platform to living, verified artists in Year 1. This sidesteps the hardest authentication problems (provenance gaps, forgeries, attribution disputes) entirely. Every work can be self-authenticated by the creator. The complex verification infrastructure can be built as the business scales.</div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-fake">
+      <div class="challenge-header" onclick="toggleC('c-fake')">
+        <div class="ch-icon" style="background:#fff3e0;">🚨</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Fake Artist Profiles & Fraudulent Listings</div>
+          <div class="ch-sub">The platform can become a fraud vector if identity isn't verified</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">Attack scenarios</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">A bad actor creates a fake profile of a well-known Vietnamese artist and lists a forgery for sale. Buyer pays; disaster follows.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Someone uploads another artist's work without permission and sells it, pocketing the money.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Price manipulation: a single person creates both a fake buyer and fake artist account to inflate price history.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Controls</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Artist identity verified via government ID + video selfie at onboarding. No anonymous artist accounts.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Invite-only artist onboarding in Phase 1 — existing verified artists refer new applicants. Community trust built in.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Flag and freeze accounts with unusual transaction patterns before release of funds.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COPYRIGHT TAB -->
+  <div class="tab-content" id="tab-copyright">
+    <div class="section-label">Copyright & Intellectual Property</div>
+    <div class="section-title">Selling a Painting ≠ Selling the Copyright</div>
+    <div class="section-desc">This is one of the most misunderstood aspects of the art market. When a collector buys a physical painting, they own the object — not the image. The artist retains copyright unless it is explicitly transferred. The platform must navigate this distinction carefully in every feature it builds.</div>
+
+    <div class="challenge open" id="c-display">
+      <div class="challenge-header" onclick="toggleC('c-display')">
+        <div class="ch-icon" style="background:#fde8e8;">🖼️</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Platform's Right to Display Artwork Images</div>
+          <div class="ch-sub">You need a license from every artist to show their work on your platform</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The problem</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">An artist retains copyright of their work even after the physical painting is sold. The platform cannot display high-resolution images of that work without a license.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">If you show artwork in marketing materials, social media, or press without specific permission, you are in copyright violation — even if the artist listed it on your platform.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">When a work is resold on the secondary market, the new seller (the collector, not the original artist) may not have the right to authorize platform display.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Solution</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Artist Onboarding Agreement</strong> must include a non-exclusive license granting the platform the right to: display, reproduce for marketing, create thumbnails and watermarked previews, and store images in perpetuity for provenance records. This must be legally drafted, not improvised.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">For secondary market listings: the original artist's platform license must explicitly include secondary sales. Add this clause to the onboarding agreement at launch.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Consider implementing an <strong>Artist Resale Right (Droit de Suite)</strong> as a feature, not just a legal obligation — automatically routing a 5–10% royalty to the original artist on every secondary sale. This is law in the EU and a powerful differentiator in your market.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-dmca">
+      <div class="challenge-header" onclick="toggleC('c-dmca')">
+        <div class="ch-icon" style="background:#fff3e0;">📋</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Content Scraping, Reposting & Unauthorized Reproduction</div>
+          <div class="ch-sub">Your platform's HD images will be scraped and reused without permission</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">Risks</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Artists will blame the platform when their work is stolen online, even if the platform was not the source.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Competing platforms or print-on-demand services may scrape your HD images and sell reproductions.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">AI training datasets frequently scrape art marketplaces — artists increasingly object to this.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Technical & Legal protections</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Watermark all public-facing images. Serve high-resolution images only to verified logged-in users after purchase confirmation.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Include robots.txt blocking AI scrapers and a clear Terms of Service prohibiting reproduction.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Establish a simple DMCA-equivalent takedown request process. Artists need to know there's a path to enforcement.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Consider this as a selling point to artists: "We protect your work better than Instagram."</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-resale">
+      <div class="challenge-header" onclick="toggleC('c-resale')">
+        <div class="ch-icon" style="background:#e8f0fe;">🔄</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Resale Royalties — Opportunity & Obligation</div>
+          <div class="ch-sub">The feature that could make artists fiercely loyal to your platform</div>
+        </div>
+        <div class="ch-severity sev-medium">MEDIUM — OPPORTUNITY</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The opportunity</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">In most art sales, an artist sells a work for $500. It resells a decade later for $50,000. The artist gets nothing from that appreciation. This is deeply resented in the art community and is driving interest in platforms that enforce resale royalties.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Build automatic resale royalty (5–10% to original artist on every secondary sale) into the platform contract and transaction logic. This is not required by law in Vietnam or most of SEA, but it is a <strong>massive trust and loyalty signal</strong> to artists and will drive word-of-mouth adoption.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">Market it explicitly: "Every time your work changes hands, you earn." This differentiates from every competing platform in the region at zero technical cost.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERATIONS TAB -->
+  <div class="tab-content" id="tab-ops">
+    <div class="section-label">Business Operations</div>
+    <div class="section-title">Running the Platform Day-to-Day</div>
+    <div class="section-desc">Beyond legal and logistics, there are operational challenges that determine whether the platform functions as promised and builds a reputation worth protecting.</div>
+
+    <div class="challenge open" id="c-payment">
+      <div class="challenge-header" onclick="toggleC('c-payment')">
+        <div class="ch-icon" style="background:#fde8e8;">💳</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Payment Infrastructure in Vietnam & SEA</div>
+          <div class="ch-sub">High-value art transactions require robust, multi-currency payment rails</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">Specific friction points</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Vietnam has restrictions on outbound foreign currency transfers. A domestic collector paying a Vietnamese artist is simple; a Singaporean collector paying a Vietnamese artist involves FX conversion and potential regulatory friction.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Credit card processors (Stripe, Braintree) have high chargeback risk on art and may impose holds on large transactions. Chargebacks on $5,000+ purchases are catastrophic to cash flow.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">High-net-worth collectors often prefer bank wire for large transactions. This requires manual reconciliation and escrow management.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Solution stack</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">For domestic (VND) transactions: integrate with VNPay, MoMo, or ZaloPay — proven high-volume Vietnamese payment infrastructure.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">For international transactions: use Stripe (with Singapore entity) or a regional payment processor. Implement escrow — funds held until delivery confirmed.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text">For transactions above $10,000: offer bank wire with a dedicated relationship manager who manages the transfer and reconciliation manually. This is standard practice at Artsy and Christie's.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-pricing">
+      <div class="challenge-header" onclick="toggleC('c-pricing')">
+        <div class="ch-icon" style="background:#fff3e0;">📈</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Pricing & Valuation: Who Decides What Art Is Worth?</div>
+          <div class="ch-sub">Unlike stocks, there is no objective price for a painting</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The problem</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Artists consistently misprice their own work — usually too low out of insecurity or too high based on personal attachment. An artist asking $15,000 for a work that comps suggest is worth $3,000 will sit unsold forever and create a distorted price history.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">The "price trend" charts in the Investor Dashboard and Artist Analytics are only trustworthy if prices are market-derived. If artists set arbitrary prices, the analytics become noise.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Approach</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Curator pricing guidance:</strong> During artwork submission, curators provide a suggested price range based on the artist's tier, medium, size, and comparable sales. Artist can price within 20% of that range freely; outside it requires curator approval. Not a hard cap — a market sanity check.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Comparable sales data:</strong> As the platform accumulates transaction data, build a "Comparables" feature — "Similar works by artists at your tier have sold for $800–$1,400." This coaches artists toward market pricing over time.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Make Offer mechanics:</strong> An active "Make Offer" flow naturally reveals buyer willingness-to-pay and creates real price discovery even on overpriced listings.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-curator">
+      <div class="challenge-header" onclick="toggleC('c-curator')">
+        <div class="ch-icon" style="background:#e8f0fe;">👤</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Curator Team: Quality, Cost & Scalability</div>
+          <div class="ch-sub">The human layer is the competitive moat — and the bottleneck</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-two-col">
+          <div class="ch-section">
+            <div class="ch-section-label">The tension</div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Curation is what separates you from Saatchi Art (which accepts almost anyone). But it is expensive, slow, and subjective. A backlog of unapproved artist submissions creates a terrible artist experience and stalls growth.</div></div>
+            <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Curators have aesthetic biases that may skew the platform toward certain styles, regions, or networks — reducing diversity and limiting the artist base.</div></div>
+          </div>
+          <div class="ch-section">
+            <div class="ch-section-label">Scalable curation model</div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Phase 1:</strong> 2–3 in-house curators handling everything. Max ~100 active artists. Tight quality, high personal attention.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Phase 2:</strong> Invite established artists to join a "Senior Artist" tier that can nominate new artists. Distributed curation with human accountability.</div></div>
+            <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>SLA requirement:</strong> Maximum 5-business-day review turnaround. This needs to be a product commitment to artists from day one.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLD START TAB -->
+  <div class="tab-content" id="tab-coldstart">
+    <div class="section-label">The Cold Start Problem</div>
+    <div class="section-title">No Artists Without Collectors. No Collectors Without Artists.</div>
+    <div class="section-desc">This is a two-sided marketplace. Both sides need to believe the other side exists before they join. The first 90 days are the hardest — and the most important — phase of the entire business.</div>
+
+    <div class="challenge open" id="c-chicken">
+      <div class="challenge-header" onclick="toggleC('c-chicken')">
+        <div class="ch-icon" style="background:#fde8e8;">🔄</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">The Chicken-and-Egg Problem</div>
+          <div class="ch-sub">The canonical two-sided marketplace challenge, amplified by the trust requirements of art</div>
+        </div>
+        <div class="ch-severity sev-critical">CRITICAL</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">Why art makes this harder than most marketplaces</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Artists will not upload their best work to a platform with no collector audience. They will list their weaker pieces "to test the water." An investor browsing 50 mediocre works will not return.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Collectors require trust before committing capital. Trust requires a track record. A track record requires completed transactions. Completed transactions require both sides already being there.</div></div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">Unlike a ride-sharing app where supply (drivers) can be recruited by market incentives, art supply is scarce and reputationally sensitive. Artists guard their brand carefully.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">The "fake it until you make it (legitimately)" strategy</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Seed supply before demand:</strong> Recruit 15–20 exceptional Vietnamese artists before opening to any collectors. Pay curator time, not commissions, to get their first listings. The platform must look like it already has great artists when the first collector arrives.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Manufacture the first transactions:</strong> Founders, friends, and early believers should make the first 10–20 purchases. This generates real price history, real certificates, and real provenance records — the trust infrastructure that future buyers need to see.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Identify a single collector community to crack first:</strong> Target the Vietnamese diaspora in Singapore, or design-conscious professionals in Ho Chi Minh City. One tight community that converts is worth more than broad low-conversion marketing.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Artist as distribution:</strong> Each verified artist has their own audience — Instagram, social networks, existing gallery collectors. When an artist joins your platform, they should actively bring 5–10 of their existing buyers with them. Make this a structured part of onboarding, not an afterthought.</div></div>
+        </div>
+        <div class="example-box"><strong>Playbook reference:</strong> Airbnb famously photographed hosts' properties professionally for free to seed supply quality. The equivalent here: offer every founding artist a free professional art photo shoot to create the platform's initial HD image library. This solves cold start and image quality simultaneously — and gives artists something tangible immediately.</div>
+      </div>
+    </div>
+
+    <div class="challenge" id="c-retention">
+      <div class="challenge-header" onclick="toggleC('c-retention')">
+        <div class="ch-icon" style="background:#fff3e0;">📌</div>
+        <div class="ch-title-wrap">
+          <div class="ch-title">Retention: Why Would Anyone Come Back?</div>
+          <div class="ch-sub">Art purchases are infrequent. Engagement must happen between transactions.</div>
+        </div>
+        <div class="ch-severity sev-high">HIGH</div>
+      </div>
+      <div class="challenge-body">
+        <div class="ch-section">
+          <div class="ch-section-label">The problem</div>
+          <div class="prob-row"><div class="prob-dot"></div><div class="prob-text">An investor who bought a painting may not buy again for 6–18 months. Without a reason to return between transactions, the platform has no relationship with them — and will lose them to a competitor or gallery at the next purchase.</div></div>
+        </div>
+        <div class="ch-section">
+          <div class="ch-section-label">Non-transactional engagement hooks</div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Portfolio value updates:</strong> Monthly email/notification — "Your collection is now estimated at $X, up 8% from last month." This is why people open the app even without buying.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Artist milestones:</strong> "An artist you follow just sold 3 works this week — their avg. price is up 22%." Creates FOMO and drives watchlist-to-purchase conversion.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Editorial content:</strong> Short monthly market report on Vietnamese/SEA art. Platform as an information source, not just a store. Builds authority and repeat visits.</div></div>
+          <div class="mit-row"><div class="mit-dot"></div><div class="mit-text"><strong>Auction events:</strong> Quarterly themed auctions create appointment viewing moments — a reason for the whole community to be on the platform at the same time.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footnote">
+      This challenge analysis draws on operational patterns from Masterworks, Artsy, Saatchi Art, and Paddle8; art market regulatory developments including the EU 6th AML Directive and US AML Act 2020; fine art logistics practices from Crown Fine Art and Masterpiece International; and two-sided marketplace cold start research. All strategic recommendations reflect best practices as of 2025–2026 and should be reviewed with qualified legal and operational advisors before implementation.
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleC(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>

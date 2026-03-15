@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtAsset — Product Requirements Document</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+<body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  :root {
+    --gold: #C9A84C;
+    --gold-lt: #E8D5A0;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --surface: #f9fafb;
+    --card: #ffffff;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: #fff; padding: 20px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); color: var(--ink); }
+
+  .prd-wrap { max-width: 860px; margin: 0 auto; padding: 0 0 60px; }
+
+  .cover { padding: 48px 0 36px; border-bottom: 0.5px solid var(--border); margin-bottom: 40px; }
+  .cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-family: var(--sans); font-weight: 500; margin-bottom: 14px; }
+  .cover-title { font-family: var(--serif); font-size: 48px; font-weight: 600; line-height: 1.1; color: var(--ink); margin-bottom: 10px; }
+  .cover-sub { font-family: var(--serif); font-size: 22px; font-weight: 400; font-style: italic; color: var(--muted); margin-bottom: 24px; }
+  .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--muted); }
+  .meta-item strong { display: block; font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+
+  .section { margin-bottom: 48px; }
+  .section-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 8px; }
+  .section-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 18px; line-height: 1.2; }
+
+  .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border-radius: 10px; padding: 20px 18px; }
+  .stat-val { font-family: var(--serif); font-size: 34px; font-weight: 600; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .stat-note { font-size: 11px; color: var(--gold); margin-top: 4px; font-weight: 500; }
+
+  .insight-box { background: var(--surface); border-left: 2px solid var(--gold); border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 16px; }
+  .insight-box p { font-size: 14px; line-height: 1.6; color: var(--ink); }
+  .insight-box .src { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .comp-card { border: 0.5px solid var(--border); border-radius: 10px; padding: 18px 16px; background: var(--card); }
+  .comp-card.gap-card { border-color: var(--gold); border-width: 1px; }
+  .comp-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .comp-tag { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+  .comp-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .comp-row .ico { flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; }
+  .ico-x { background: #fde8e8; color: #c0392b; }
+  .ico-ok { background: #e8f5e9; color: #27ae60; }
+  .comp-card.gap-card .comp-name { color: var(--gold); }
+  .gap-badge { display: inline-block; background: var(--gold); color: #fff; font-size: 10px; font-weight: 500; border-radius: 4px; padding: 2px 8px; margin-bottom: 10px; letter-spacing: 0.05em; }
+
+  .phase-wrap { display: flex; flex-direction: column; gap: 0; }
+  .phase { border: 0.5px solid var(--border); border-radius: 10px; margin-bottom: 14px; overflow: hidden; background: var(--card); }
+  .phase-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; user-select: none; }
+  .phase-num { width: 28px; height: 28px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--gold); flex-shrink: 0; border: 0.5px solid var(--gold); }
+  .phase-title { font-weight: 500; font-size: 15px; flex: 1; }
+  .phase-badge { font-size: 11px; color: var(--muted); background: var(--surface); border-radius: 20px; padding: 3px 10px; }
+  .phase-body { padding: 0 20px 18px; border-top: 0.5px solid var(--border); display: none; }
+  .phase.open .phase-body { display: block; }
+  .phase-desc { font-size: 13px; color: var(--muted); line-height: 1.6; padding: 14px 0 10px; border-bottom: 0.5px solid var(--border); margin-bottom: 14px; }
+
+  .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .feat { background: var(--surface); border-radius: 8px; padding: 12px 14px; }
+  .feat-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--ink); }
+  .feat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .feat-priority { display: inline-block; font-size: 10px; font-weight: 500; border-radius: 3px; padding: 1px 6px; margin-top: 6px; letter-spacing: 0.04em; }
+  .p-must { background: #fde8e8; color: #b03030; }
+  .p-should { background: #e8f0fe; color: #2a5cb3; }
+  .p-could { background: #f0fde8; color: #2e8030; }
+  .p-coming { background: var(--surface); color: var(--muted); border: 0.5px solid var(--border); }
+
+  .journey-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .journey { display: flex; gap: 0; align-items: stretch; }
+  .j-role { width: 110px; flex-shrink: 0; display: flex; align-items: center; }
+  .j-role-inner { font-size: 12px; font-weight: 500; color: var(--ink); padding: 8px 12px 8px 0; border-right: 0.5px solid var(--border); width: 100%; }
+  .j-steps { display: flex; align-items: center; gap: 0; flex: 1; padding-left: 16px; overflow-x: auto; }
+  .j-step { background: var(--surface); border-radius: 6px; padding: 8px 12px; font-size: 11px; color: var(--muted); white-space: nowrap; position: relative; }
+  .j-step.key { background: var(--card); border: 0.5px solid var(--gold); color: var(--ink); font-weight: 500; }
+  .j-arrow { color: var(--muted); font-size: 14px; padding: 0 6px; flex-shrink: 0; }
+
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .risk-card { border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--card); }
+  .risk-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .risk-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .risk-action { font-size: 11px; color: var(--gold); margin-top: 8px; }
+
+  .metric-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .metric { flex: 1; min-width: 140px; background: var(--surface); border-radius: 8px; padding: 14px 16px; }
+  .metric-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .metric-val { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  .metric-ctx { font-size: 11px; color: var(--muted); }
+
+  .divider { height: 0.5px; background: var(--border); margin: 32px 0; }
+
+  .nav-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); margin-bottom: 28px; overflow-x: auto; }
+  .nav-tab { font-size: 13px; font-weight: 400; color: var(--muted); padding: 10px 18px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color .15s; }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 500; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .screen-stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .screen-card { border: 0.5px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--card); }
+  .screen-bar { background: var(--surface); padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--muted); border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px; }
+  .screen-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .screen-body { padding: 12px; }
+  .screen-title { font-size: 12px; font-weight: 500; margin-bottom: 8px; }
+  .screen-elem { height: 8px; background: var(--surface); border-radius: 3px; margin-bottom: 5px; }
+  .screen-elem.dark { background: var(--border); }
+  .screen-elem.gold { background: var(--gold); opacity: 0.5; }
+  .screen-elem.sm { width: 55%; }
+  .screen-elem.xs { width: 35%; }
+  .screen-btn { background: var(--gold); color: #fff; font-size: 10px; border-radius: 4px; padding: 4px 10px; display: inline-block; margin-top: 6px; font-family: var(--sans); }
+
+  .footnote { font-size: 11px; color: var(--muted); line-height: 1.5; padding: 16px 0 0; border-top: 0.5px solid var(--border); margin-top: 28px; }
+</style>
+
+<div class="prd-wrap">
+  <div class="cover">
+    <div class="cover-tag">Product Requirements Document — Demo MVP</div>
+    <div class="cover-title">ArtAsset</div>
+    <div class="cover-sub">Where Physical Art Becomes a Trackable Investment</div>
+    <div class="cover-meta">
+      <div class="meta-item"><strong>Document version</strong>v1.1 — Market-Optimized</div>
+      <div class="meta-item"><strong>Target market</strong>Southeast Asia, primary Vietnam</div>
+      <div class="meta-item"><strong>Stage</strong>Non-functional Demo MVP</div>
+      <div class="meta-item"><strong>Primary goal</strong>Stakeholder validation</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs" id="navTabs">
+    <div class="nav-tab active" onclick="switchTab('market')">Market Research</div>
+    <div class="nav-tab" onclick="switchTab('competitive')">Competitive Gap</div>
+    <div class="nav-tab" onclick="switchTab('features')">Feature Specs</div>
+    <div class="nav-tab" onclick="switchTab('screens')">Screen Map</div>
+    <div class="nav-tab" onclick="switchTab('metrics')">Success Metrics</div>
+  </div>
+
+  <!-- MARKET TAB -->
+  <div class="tab-content active" id="tab-market">
+    <div class="section">
+      <div class="section-label">Market Opportunity</div>
+      <div class="section-title">A Growing Market With a Missing Middle</div>
+
+      <div class="market-grid">
+        <div class="stat-card">
+          <div class="stat-val">$11B</div>
+          <div class="stat-label">Global online art market (2024)</div>
+          <div class="stat-note">↑ 6.3% CAGR to $19B by 2033</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">9.4%</div>
+          <div class="stat-label">Asia-Pacific's projected CAGR — fastest growing region globally</div>
+          <div class="stat-note">2025 – 2032 forecast</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">$73B</div>
+          <div class="stat-label">Total global art market (all channels)</div>
+          <div class="stat-note">Online is still only 15% penetrated</div>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <p>Vietnam, Indonesia, and the Philippines are gaining recognition as vibrant ecosystems, fostering a new generation of artists and collectors — yet international demand for Vietnamese modern art significantly outpaces the country's current digital infrastructure.</p>
+        <div class="src">Source: Art Trends 2025 analysis; Sotheby's regional commentary</div>
+      </div>
+      <div class="insight-box">
+        <p>Asia holds 27% of global billionaire wealth — higher than Europe — with the highest growth in the next 5 years expected in Taiwan, Japan, South Korea, and Indonesia. A new generation of collectors in their 30s is entering the market through fairs, signalling durable demand rather than speculation.</p>
+        <div class="src">Source: UBS Global Wealth Report 2024; Artnet Asia Pivot, 2025</div>
+      </div>
+      <div class="insight-box">
+        <p>40%+ of first-time online buyers discover art through social channels. Millennials and Gen Z prefer digital-first platforms with direct artist engagement, investment analytics, and identity-driven purchasing — none of which existing SEA platforms currently provide.</p>
+        <div class="src">Source: Hiscox Online Art Trade Report 2024; Art Trends 2025</div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Regional Context</div>
+      <div class="section-title">Why Southeast Asia, Why Now</div>
+
+      <div class="market-grid">
+        <div class="stat-card">
+          <div class="stat-val">640M</div>
+          <div class="stat-label">ASEAN population — set to be world's 4th largest single market</div>
+          <div class="stat-note">Median age 33 by 2030</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">$37M</div>
+          <div class="stat-label">Philippines art auction sales — highest in SEA</div>
+          <div class="stat-note">Vietnam market infrastructure is nascent but demand is surging</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">400%</div>
+          <div class="stat-label">Sotheby's growth in online sales from 2019–2023</div>
+          <div class="stat-note">Millennials = 30%+ of buyers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPETITIVE TAB -->
+  <div class="tab-content" id="tab-competitive">
+    <div class="section">
+      <div class="section-label">Competitive Landscape</div>
+      <div class="section-title">Three Giants, Three Gaps</div>
+
+      <div class="comp-grid">
+        <div class="comp-card">
+          <div class="comp-name">Saatchi Art</div>
+          <div class="comp-tag">Direct-to-consumer e-commerce</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> Global artist listings</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> Direct purchase, easy UX</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No investor tools</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No price history / analytics</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> Art treated as décor, not asset</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No secondary market</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-name">Artsy</div>
+          <div class="comp-tag">B2B2C gallery aggregator</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> Strong provenance tracking</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> 4,000+ galleries, trusted brand</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> Gallery-dependent (middleman)</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> Not built for emerging artists</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No financial portfolio dashboards</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> Western-centric curation</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-name">Masterworks</div>
+          <div class="comp-tag">Fractional blue-chip investment</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> Strong investor dashboard UX</div>
+          <div class="comp-row"><span class="ico ico-ok">✓</span> 900K+ users (2025)</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No artist relationships</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> Only blue-chip ($1M+ works)</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> No direct purchase / community</div>
+          <div class="comp-row"><span class="ico ico-x">✗</span> US-only, heavy regulation</div>
+        </div>
+      </div>
+
+      <div class="comp-grid" style="margin-top: 8px;">
+        <div class="comp-card gap-card" style="grid-column: 1 / -1;">
+          <div class="gap-badge">Your Unique Position</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 4px;">
+            <div>
+              <div class="comp-name">From Saatchi</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> Direct artist-to-collector connection</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> Emerging & living artists focus</div>
+            </div>
+            <div>
+              <div class="comp-name">From Artsy</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> In-house curator / trust layer</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> Provenance + certificate system</div>
+            </div>
+            <div>
+              <div class="comp-name">From Masterworks</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> Portfolio analytics & dashboards</div>
+              <div class="comp-row"><span class="ico ico-ok">✓</span> Price trend & ROI tracking</div>
+            </div>
+          </div>
+          <div style="margin-top: 14px; padding-top: 12px; border-top: 0.5px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.6;">
+            Plus: Southeast Asia regional focus, Vietnamese art as a beachhead, and a community layer (chat, networking) that none of the three have. This positions the platform not as a clone, but as the first art-fintech hybrid built for the SEA collector.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES TAB -->
+  <div class="tab-content" id="tab-features">
+    <div class="section">
+      <div class="section-label">Feature Specification</div>
+      <div class="section-title">Demo Scope by Phase</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:24px; line-height:1.6;">Each phase is a clickable section. Priorities are labeled: <span style="background:#fde8e8;color:#b03030;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:500;">MUST</span> = core demo blocker, <span style="background:#e8f0fe;color:#2a5cb3;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:500;">SHOULD</span> = strong demonstrator, <span style="background:#f0fde8;color:#2e8030;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:500;">COULD</span> = polish, <span style="background:var(--surface);color:var(--muted);border-radius:3px;border:0.5px solid var(--border);padding:1px 6px;font-size:10px;font-weight:500;">FUTURE</span> = coming-soon tab.</p>
+
+      <div class="phase-wrap">
+
+        <div class="phase open" id="ph1">
+          <div class="phase-header" onclick="togglePhase('ph1')">
+            <div class="phase-num">1</div>
+            <div class="phase-title">Public Discovery & Homepage</div>
+            <div class="phase-badge">3 screens</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">The first impression: a market-intelligence-forward homepage that signals this is not a gallery website. Trending artists, price movement, featured works. Filters for country, medium, price range.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">Trending Artists leaderboard</div>
+                <div class="feat-desc">Ranked by price appreciation, follower growth, recent sales. Market research confirms discovery is a top pain point.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Advanced filter bar</div>
+                <div class="feat-desc">Country, medium, year, price range, artist tier (emerging / established). Mocked results update instantly.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Featured Gallery / Space Edition</div>
+                <div class="feat-desc">Curated digital viewing room — a thematic collection that showcases curator role and justifies platform's trust position.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Market pulse widget</div>
+                <div class="feat-desc">Mini chart showing avg. sale price movement last 30 days for a category. Differentiates platform from e-commerce immediately.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Country & medium category pages</div>
+                <div class="feat-desc">Filter by Vietnam, Indonesia, Thailand etc. + Oil, Lacquer, Mixed. Caters to SEA regional differentiation identified in research.</div>
+                <span class="feat-priority p-could">COULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">AR "View in space" preview</div>
+                <div class="feat-desc">Map Studio integration for viewing art on a real wall. Powerful demo moment.</div>
+                <span class="feat-priority p-coming">FUTURE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase" id="ph2">
+          <div class="phase-header" onclick="togglePhase('ph2')">
+            <div class="phase-num">2</div>
+            <div class="phase-title">Artwork Detail — The Trust Engine</div>
+            <div class="phase-badge">1 screen, high impact</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">The single most important demo screen. This is where "art platform" becomes "art investment platform." Every trust and provenance feature lives here. Walk every stakeholder through this screen first.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">HD artwork with zoom</div>
+                <div class="feat-desc">Simulated zoom into texture/brushwork. Establishes physical authenticity signal immediately.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Price history chart</div>
+                <div class="feat-desc">Line chart of this specific work's value over time. Most memorable demo moment — makes the investment case viscerally.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Ownership timeline</div>
+                <div class="feat-desc">Chain of custody: Artist → Collector A (2019) → Collector B (2022) → On Sale (2024). Provenance = trust.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Certificate of Authenticity</div>
+                <div class="feat-desc">Viewable/downloadable mock PDF. Curator-signed. Timestamp. Platform seal. Separates from NFT speculation.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">CTA cluster: Buy / Offer / Message / Follow</div>
+                <div class="feat-desc">Four action types on one screen demonstrate the full platform loop — financial, social, and transactional.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Similar works & price comparison</div>
+                <div class="feat-desc">Horizontal scroll of comparable pieces with avg. price. Investment context framing.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Artist ROI badge</div>
+                <div class="feat-desc">"Works by this artist have appreciated 43% on average over 3 years." Context that motivates collector action.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Fractional ownership tab</div>
+                <div class="feat-desc">Coming-soon: buy a 10% share for $800. Teases future monetization to investors.</div>
+                <span class="feat-priority p-coming">FUTURE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase" id="ph3">
+          <div class="phase-header" onclick="togglePhase('ph3')">
+            <div class="phase-num">3</div>
+            <div class="phase-title">Investor Dashboard</div>
+            <div class="phase-badge">1 screen, fintech tone</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">The screen that proves this is not Saatchi Art. Looks and feels like a fintech portfolio tracker. This is what separates you from every other art marketplace in SEA.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">Portfolio value overview</div>
+                <div class="feat-desc">Total value, 30-day change, all-time gain. Exact pattern of Masterworks but for your own artists and whole works.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">My Collection grid</div>
+                <div class="feat-desc">Thumbnail + current est. value + % change since purchase. The "collector's vault" feeling.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Watchlist with price alerts</div>
+                <div class="feat-desc">Artists I follow + their price trend indicators. Confirms the platform tracks value over time, not just at purchase.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Portfolio allocation chart</div>
+                <div class="feat-desc">Pie/donut by country, medium, or artist. Confirms diversification angle — art as a multi-asset class.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Recent transaction history</div>
+                <div class="feat-desc">A log of buys, offers, and sales. Confirms the secondary market capability for liquidity.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Market analytics feed</div>
+                <div class="feat-desc">Avg. sale price trends for categories the investor owns. Personalised intel. Coming Soon label acceptable.</div>
+                <span class="feat-priority p-coming">FUTURE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase" id="ph4">
+          <div class="phase-header" onclick="togglePhase('ph4')">
+            <div class="phase-num">4</div>
+            <div class="phase-title">Artist Profile & Private Dashboard</div>
+            <div class="phase-badge">2 screens</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">Dual view: public-facing profile (biography, portfolio, collectors) and a private analytics dashboard. Demonstrates the platform serves artists as a business tool, not just a listing site.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">Public profile: bio + portfolio grid</div>
+                <div class="feat-desc">Customizable. Country badge, medium tags, artist tier (Emerging / Established / Verified). First-class presentation.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Collector network display</div>
+                <div class="feat-desc">Who owns this artist's works. Shows community and secondary market depth. Market research shows collector-artist connection is key unmet need.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Price trend graph (public)</div>
+                <div class="feat-desc">Artist's average sale price over time. Visible on the public profile to attract investors.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Private: upload new work flow</div>
+                <div class="feat-desc">Step-by-step: upload image → add title/medium/story/price → curator review pending. Shows onboarding for artists.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Private: analytics — views & followers</div>
+                <div class="feat-desc">Profile views, follow rate, avg. sale price trend. Makes the artist a data-informed creator, not just a seller.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Artist subscription tier page</div>
+                <div class="feat-desc">Free vs. Pro ($X/month) with feature comparison. Demonstrates monetization to investors.</div>
+                <span class="feat-priority p-could">COULD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase" id="ph5">
+          <div class="phase-header" onclick="togglePhase('ph5')">
+            <div class="phase-num">5</div>
+            <div class="phase-title">Messaging & Connection Layer</div>
+            <div class="phase-badge">1 screen</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">The relationship-building differentiator. A mocked chat between investor and artist shows negotiation, offer-making, and trust-building — something none of the three competitors offer. Short but must feel authentic.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">Chat interface with offer thread</div>
+                <div class="feat-desc">Mocked conversation: investor makes offer, artist counter-proposes, deal concluded. Shows the private deal flow that drives premium transactions.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Offer card in chat</div>
+                <div class="feat-desc">Structured offer widget inside the chat (not free text): price, condition, expiry. Feels professional, financial-grade.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Transaction history log</div>
+                <div class="feat-desc">After deal closed, appears in both parties' dashboards. Confirms audit trail and provenance update.</div>
+                <span class="feat-priority p-could">COULD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phase" id="ph6">
+          <div class="phase-header" onclick="togglePhase('ph6')">
+            <div class="phase-num">6</div>
+            <div class="phase-title">Curator / Admin Panel</div>
+            <div class="phase-badge">1 screen — backstage</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-desc">The trust engine behind the scenes. Show stakeholders how the platform maintains quality, authenticates artists, and manages the marketplace — the moat that differentiates from open peer-to-peer platforms.</div>
+            <div class="feat-grid">
+              <div class="feat">
+                <div class="feat-name">Artist verification queue</div>
+                <div class="feat-desc">Pending applications with portfolio review. Approve / Reject / Request more info. Curator as gatekeeper = platform integrity.</div>
+                <span class="feat-priority p-must">MUST</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Artwork authentication flow</div>
+                <div class="feat-desc">Pending artwork submissions with condition checklist. Issue Certificate upon approval.</div>
+                <span class="feat-priority p-should">SHOULD</span>
+              </div>
+              <div class="feat">
+                <div class="feat-name">Platform analytics overview</div>
+                <div class="feat-desc">GMV, active listings, new collectors this month. Demonstrates business metrics to investor stakeholders.</div>
+                <span class="feat-priority p-could">COULD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREENS TAB -->
+  <div class="tab-content" id="tab-screens">
+    <div class="section">
+      <div class="section-label">Screen Architecture</div>
+      <div class="section-title">12 Screens, 3 User Journeys</div>
+
+      <div class="screen-stack" style="margin-bottom: 28px;">
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Homepage</div>
+          <div class="screen-body">
+            <div class="screen-elem gold"></div>
+            <div class="screen-elem dark sm"></div>
+            <div class="screen-elem sm"></div>
+            <div class="screen-elem xs"></div>
+            <div style="display:flex;gap:6px;margin-top:8px;margin-bottom:4px;">
+              <div class="screen-elem" style="width:30%;height:40px;background:var(--border);border-radius:4px;"></div>
+              <div class="screen-elem" style="width:30%;height:40px;background:var(--border);border-radius:4px;"></div>
+              <div class="screen-elem" style="width:30%;height:40px;background:var(--border);border-radius:4px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Artwork Detail</div>
+          <div class="screen-body">
+            <div class="screen-elem" style="height:60px;background:var(--surface);"></div>
+            <div class="screen-elem dark sm" style="margin-top:8px;"></div>
+            <div class="screen-elem xs"></div>
+            <div class="screen-elem gold xs"></div>
+            <div class="screen-btn">Buy Now</div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Investor Dashboard</div>
+          <div class="screen-body">
+            <div style="display:flex;gap:4px;margin-bottom:8px;">
+              <div class="screen-elem" style="width:48%;height:36px;background:var(--surface);border-radius:4px;"></div>
+              <div class="screen-elem" style="width:48%;height:36px;background:var(--surface);border-radius:4px;"></div>
+            </div>
+            <div class="screen-elem dark sm"></div>
+            <div class="screen-elem xs"></div>
+            <div class="screen-elem" style="height:28px;background:var(--surface);"></div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Artist Profile (Public)</div>
+          <div class="screen-body">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--surface);flex-shrink:0;"></div><div><div class="screen-elem dark xs" style="margin-bottom:3px;"></div><div class="screen-elem xs" style="width:50px;"></div></div></div>
+            <div class="screen-elem gold sm"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;">
+              <div class="screen-elem" style="height:30px;background:var(--surface);"></div>
+              <div class="screen-elem" style="height:30px;background:var(--surface);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Artist Dashboard (Private)</div>
+          <div class="screen-body">
+            <div class="screen-elem dark sm"></div>
+            <div class="screen-elem" style="height:40px;background:var(--surface);margin-top:6px;"></div>
+            <div class="screen-elem xs" style="margin-top:6px;"></div>
+            <div class="screen-elem sm"></div>
+          </div>
+        </div>
+        <div class="screen-card">
+          <div class="screen-bar"><div class="screen-dot"></div>Messaging</div>
+          <div class="screen-body">
+            <div class="screen-elem sm"></div>
+            <div class="screen-elem xs" style="margin-left:auto;background:var(--gold);opacity:0.4;display:block;width:55%;"></div>
+            <div class="screen-elem sm"></div>
+            <div class="screen-elem xs" style="margin-left:auto;background:var(--gold);opacity:0.4;display:block;width:40%;"></div>
+            <div class="screen-btn" style="width:100%;text-align:center;display:block;margin-top:8px;">Send Offer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top: 28px;">Key Demo Journeys</div>
+      <div style="margin-bottom: 12px; font-size: 13px; color: var(--muted); line-height: 1.6;">Walk stakeholders through one of these three journeys based on their role. The Investor journey has the highest conversion rate for fundraising conversations.</div>
+
+      <div class="journey-wrap">
+        <div class="journey">
+          <div class="j-role"><div class="j-role-inner">Investor journey</div></div>
+          <div class="j-steps">
+            <div class="j-step">Homepage</div><div class="j-arrow">→</div>
+            <div class="j-step key">Discover artist</div><div class="j-arrow">→</div>
+            <div class="j-step">Artist profile</div><div class="j-arrow">→</div>
+            <div class="j-step key">Artwork detail + price chart</div><div class="j-arrow">→</div>
+            <div class="j-step">Make Offer / Buy</div><div class="j-arrow">→</div>
+            <div class="j-step key">Dashboard: portfolio update</div>
+          </div>
+        </div>
+        <div class="journey">
+          <div class="j-role"><div class="j-role-inner">Artist journey</div></div>
+          <div class="j-steps">
+            <div class="j-step">Artist signup</div><div class="j-arrow">→</div>
+            <div class="j-step">Upload artwork</div><div class="j-arrow">→</div>
+            <div class="j-step key">Curator review queue</div><div class="j-arrow">→</div>
+            <div class="j-step">Listed on marketplace</div><div class="j-arrow">→</div>
+            <div class="j-step key">Private analytics dashboard</div><div class="j-arrow">→</div>
+            <div class="j-step">Negotiate via chat</div>
+          </div>
+        </div>
+        <div class="journey">
+          <div class="j-role"><div class="j-role-inner">Curator journey</div></div>
+          <div class="j-steps">
+            <div class="j-step">Admin panel</div><div class="j-arrow">→</div>
+            <div class="j-step key">Review artist application</div><div class="j-arrow">→</div>
+            <div class="j-step">Approve / verify artwork</div><div class="j-arrow">→</div>
+            <div class="j-step key">Issue certificate</div><div class="j-arrow">→</div>
+            <div class="j-step">Artwork goes live</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METRICS TAB -->
+  <div class="tab-content" id="tab-metrics">
+    <div class="section">
+      <div class="section-label">Demo Success Criteria</div>
+      <div class="section-title">What Does a Successful Demo Look Like?</div>
+
+      <div class="metric-row">
+        <div class="metric">
+          <div class="metric-name">Stakeholder comprehension</div>
+          <div class="metric-val">100%</div>
+          <div class="metric-ctx">Testers can explain why this isn't just an art store after the investor dashboard demo</div>
+        </div>
+        <div class="metric">
+          <div class="metric-name">Journey completion</div>
+          <div class="metric-val">3 of 3</div>
+          <div class="metric-ctx">All three user journeys completable without explanation from the presenter</div>
+        </div>
+        <div class="metric">
+          <div class="metric-name">Screens completed</div>
+          <div class="metric-val">12</div>
+          <div class="metric-ctx">All 6 phases of features demonstrated across at least 12 distinct screens</div>
+        </div>
+        <div class="metric">
+          <div class="metric-name">The "aha" moment</div>
+          <div class="metric-val">1 per role</div>
+          <div class="metric-ctx">Investor: price chart. Artist: analytics dash. Curator: certificate issuance.</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top: 28px;">Risks & Mitigations</div>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="risk-title">Demo looks like NFT speculation</div>
+          <div class="risk-desc">The investment angle may trigger NFT associations which damage credibility with traditional collectors.</div>
+          <div class="risk-action">Mitigation: Feature "Certificate of Authenticity" prominently. Use the word "curator" not "token". Show physical work stories & provenance.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Mistaken for a gallery listing site</div>
+          <div class="risk-desc">Without the investor dashboard early in the flow, stakeholders may not grasp the fintech positioning.</div>
+          <div class="risk-action">Mitigation: Always open the demo at the Investor Dashboard when pitching to investors. Lead with the money, not the art.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Market perceived as too niche (Vietnam only)</div>
+          <div class="risk-desc">SEA-first beachhead may appear limiting to global investors.</div>
+          <div class="risk-action">Mitigation: Homepage shows works from Vietnam, Thailand, Indonesia, Philippines. Regional breadth from day one — not just Vietnamese art.</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">Trust mechanism not believable in a mock</div>
+          <div class="risk-desc">A mocked "Certificate of Authenticity" may feel thin without real backend verification.</div>
+          <div class="risk-action">Mitigation: Design the certificate PDF template professionally. Include mock digital signatures, QR codes, curator photo. The PDF is a key trust prop.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-label">Monetization (Visible in Demo)</div>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="feat-name">Commission on primary sales</div>
+          <div class="feat-desc">~8–15% of transaction value. Industry standard. Shown in checkout mock.</div>
+          <span class="feat-priority p-must">VISIBLE IN DEMO</span>
+        </div>
+        <div class="feat">
+          <div class="feat-name">Artist monthly subscription</div>
+          <div class="feat-desc">Free / Pro tiers. Upgrade page shown in artist dashboard.</div>
+          <span class="feat-priority p-must">VISIBLE IN DEMO</span>
+        </div>
+        <div class="feat">
+          <div class="feat-name">Auction & private deal fees</div>
+          <div class="feat-desc">Shown as "Coming Soon" in marketplace. Establishes premium revenue model.</div>
+          <span class="feat-priority p-coming">FUTURE</span>
+        </div>
+        <div class="feat">
+          <div class="feat-name">Fractional ownership</div>
+          <div class="feat-desc">Tab on artwork detail page: "Buy a share from $200." Coming soon state only.</div>
+          <span class="feat-priority p-coming">FUTURE</span>
+        </div>
+      </div>
+
+      <div class="footnote">
+        PRD v1.1 — Prepared with market research from Art Basel/UBS Global Art Market Report 2025, Grand View Research, SNS Insider Online Art Market 2025–2032, Artnet Asia Pivot Newsletter (Dec 2025), and UBS Global Wealth Report 2024. Competitive analysis drawn from public platform data (Masterworks, Artsy, Saatchi Art).
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+function togglePhase(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>

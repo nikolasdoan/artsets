@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtAsset — Documentation</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-lt: #E8D5A0;
+      --ink: #1a1a1a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --surface: #f9fafb;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); color: var(--ink); background: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .container { max-width: 640px; width: 100%; }
+    .tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 14px; }
+    h1 { font-family: var(--serif); font-size: 48px; font-weight: 600; line-height: 1.1; margin-bottom: 10px; }
+    .sub { font-family: var(--serif); font-size: 20px; font-weight: 400; font-style: italic; color: var(--muted); margin-bottom: 40px; }
+    .cards { display: flex; flex-direction: column; gap: 16px; }
+    .card { border: 0.5px solid var(--border); border-radius: 12px; padding: 28px 24px; text-decoration: none; color: inherit; transition: border-color 0.2s, box-shadow 0.2s; display: block; }
+    .card:hover { border-color: var(--gold); box-shadow: 0 4px 20px rgba(201, 168, 76, 0.1); }
+    .card-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 8px; }
+    .card-title { font-family: var(--serif); font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+    .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .card-arrow { margin-top: 14px; font-size: 13px; color: var(--gold); font-weight: 500; }
+    .footer { margin-top: 48px; font-size: 11px; color: var(--muted); border-top: 0.5px solid var(--border); padding-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tag">ArtAsset Platform</div>
+    <h1>Documentation</h1>
+    <div class="sub">Where Physical Art Becomes a Trackable Investment</div>
+
+    <div class="cards">
+      <a class="card" href="art_platform_prd.html">
+        <div class="card-label">Product Requirements</div>
+        <div class="card-title">PRD — Demo MVP</div>
+        <div class="card-desc">Market research, competitive analysis, feature specifications, screen architecture, and success metrics for the ArtAsset platform demo.</div>
+        <div class="card-arrow">Read document &rarr;</div>
+      </a>
+
+      <a class="card" href="art_platform_execution_challenges.html">
+        <div class="card-label">Execution Analysis</div>
+        <div class="card-title">The Hard Problems</div>
+        <div class="card-desc">Every major execution challenge mapped and rated — legal, logistics, trust, copyright, operations, and cold start strategy.</div>
+        <div class="card-arrow">Read document &rarr;</div>
+      </a>
+    </div>
+
+    <div class="footer">ArtAsset — Southeast Asia Art Investment Platform</div>
+  </div>
+</body>
+</html>
